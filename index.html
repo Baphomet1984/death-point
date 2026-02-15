@@ -105,6 +105,15 @@ body::after{
     width:0%;
     background:#00ff00;
 }
+
+/* Shake */
+@keyframes shake{
+    0%{transform:translate(0);}
+    25%{transform:translate(-5px,5px);}
+    50%{transform:translate(5px,-5px);}
+    75%{transform:translate(-5px,-5px);}
+    100%{transform:translate(5px,5px);}
+}
 </style>
 </head>
 
@@ -138,7 +147,7 @@ for(let i=0;i<50;i++){
     document.body.appendChild(span);
 }
 
-// ---------- PUNTO VIVO ----------
+// ---------- PUNTO ROJO ----------
 
 let signal = document.getElementById("signal");
 let holdTimer;
@@ -203,66 +212,4 @@ document.getElementById("overlay").addEventListener("click",()=>{
 
 function startTerminal(){
 
-    let overlay = document.getElementById("overlay");
-    overlay.innerHTML = `
-        <div id="terminal"></div>
-        <div id="progressBar"><div id="progress"></div></div>
-    `;
-
-    let terminal = document.getElementById("terminal");
-
-    let commands = [
-        "Initializing override protocol...",
-        "Bypassing security layers...",
-        "Decrypting hidden entity...",
-        "Injecting unknown payload...",
-        "System integrity compromised...",
-        "WARNING: DANGEROUS UNLOCK SEQUENCE COMPLETE"
-    ];
-
-    let i = 0;
-
-    function typeLine(){
-        if(i < commands.length){
-            let line = commands[i];
-            let charIndex = 0;
-            let lineElement = document.createElement("div");
-            terminal.appendChild(lineElement);
-
-            let typing = setInterval(()=>{
-                lineElement.textContent += line.charAt(charIndex);
-                charIndex++;
-                if(charIndex >= line.length){
-                    clearInterval(typing);
-                    i++;
-                    setTimeout(typeLine,500);
-                }
-            },30);
-        } else {
-            startLoading();
-        }
-    }
-
-    typeLine();
-}
-
-function startLoading(){
-    let progress = document.getElementById("progress");
-    let width = 0;
-
-    let loading = setInterval(()=>{
-        width += 2;
-        progress.style.width = width + "%";
-
-        if(width >= 100){
-            clearInterval(loading);
-            setTimeout(()=>{
-                window.location.href="https://tupaginagrotesca.com";
-            },1200);
-        }
-    },60);
-}
-
-</script>
-</body>
-</html>
+    let overlay = document.getElement
