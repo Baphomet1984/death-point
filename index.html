@@ -37,7 +37,6 @@ body::after{
     opacity:0.2;
     user-select:none;
     pointer-events:none;
-    transition:0.3s;
 }
 
 /* Punto rojo */
@@ -71,6 +70,23 @@ body::after{
     animation: glitch 0.15s infinite;
 }
 
+#alertSequence{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:black;
+    color:red;
+    font-size:1.5rem;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    flex-direction:column;
+}
+
 @keyframes glitch{
     0%{transform:translate(0);}
     20%{transform:translate(-5px,5px);}
@@ -93,14 +109,115 @@ body::after{
     </div>
 </div>
 
+<div id="alertSequence"></div>
+
 <script>
 
-// --------- FRAGMENTOS QUE SE DESCOMPONEN ---------
+// ---------- FRAGMENTOS ----------
 
 const fragments = [
 "kernel.panic()",
 "ERR_FATAL_SIGNAL",
 "memory_corruption",
+"void main(){ }",
+"0x004F3A",
+"decrypt.fail",
+"inject.override()",
+"segmentation_fault"
+];
+
+for(let i=0;i<45;i++){
+    let span = document.createElement("div");
+    span.className="code-fragment";
+    span.innerText = fragments[Math.floor(Math.random()*fragments.length)];
+    span.style.top = Math.random()*100+"vh";
+    span.style.left = Math.random()*100+"vw";
+    span.style.fontSize = (12 + Math.random()*18)+"px";
+    document.body.appendChild(span);
+}
+
+// ---------- PUNTO ROJO ----------
+
+let signal = document.getElementById("signal");
+let holdTimer;
+let holdTime = 1500;
+
+setInterval(()=>{
+    signal.style.opacity = Math.random() > 0.7 ? 0.3 : 1;
+},300);
+
+setInterval(()=>{
+    let x = Math.random()*8 -4;
+    let y = Math.random()*8 -4;
+    signal.style.transform = `translate(${x}px,${y}px)`;
+},800);
+
+signal.addEventListener("mousedown", startHold);
+signal.addEventListener("touchstart", startHold);
+
+signal.addEventListener("mouseup", cancelHold);
+signal.addEventListener("mouseleave", cancelHold);
+signal.addEventListener("touchend", cancelHold);
+
+function startHold(){
+    holdTimer = setTimeout(triggerFail, holdTime);
+}
+
+function cancelHold(){
+    clearTimeout(holdTimer);
+}
+
+// ---------- FAIL ----------
+
+function triggerFail(){
+    document.querySelectorAll(".code-fragment").forEach(e=>e.remove());
+    signal.remove();
+
+    if(navigator.vibrate){
+        navigator.vibrate([200,100,200]);
+    }
+
+    document.getElementById("failScreen").style.display="flex";
+}
+
+// ---------- SECUENCIA FINAL ----------
+
+document.getElementById("failScreen").addEventListener("click",()=>{
+
+    document.getElementById("failScreen").style.display="none";
+
+    let alertBox = document.getElementById("alertSequence");
+    alertBox.style.display="flex";
+
+    const messages = [
+        "UNAUTHORIZED ENTITY DETECTED",
+        "SIGNAL ESCAPING CONTAINMENT",
+        "CORE INTEGRITY LOST",
+        "SYSTEM COLLAPSE IMMINENT"
+    ];
+
+    let index = 0;
+
+    function showNext(){
+        if(index < messages.length){
+            alertBox.innerHTML = messages[index];
+            index++;
+            setTimeout(showNext,1500);
+        }else{
+            alertBox.innerHTML = "";
+            setTimeout(()=>{
+                window.location.href="https://tupaginagrotesca.com";
+            },2000);
+        }
+    }
+
+    showNext();
+});
+
+</script>
+
+</body>
+</html>"memory_corruption",
 "void main(){ }",
 "0x004F3A",
 "decrypt.fail",
