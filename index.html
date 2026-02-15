@@ -144,8 +144,8 @@ for(let i=0;i<40;i++){
 // -------- PUNTO ROJO --------
 
 let signal=document.getElementById("signal");
+let overlay=document.getElementById("overlay");
 let holdTimer;
-
 setInterval(()=>{
     signal.style.opacity=Math.random()>0.7?0.3:1;
 },300);
@@ -181,7 +181,7 @@ function startSequence(){
     document.querySelectorAll(".code-fragment").forEach(e=>e.remove());
     signal.remove();
 
-    let overlay=document.getElementById("overlay");
+    
     overlay.style.display="flex";
 
     overlay.innerHTML="<div class='glitch'>SYSTEM FAILURE</div><div style='color:white;margin-top:20px;'>Touch to continue...</div>";
