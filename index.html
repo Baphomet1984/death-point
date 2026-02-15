@@ -212,4 +212,113 @@ document.getElementById("overlay").addEventListener("click",()=>{
 
 function startTerminal(){
 
-    let overlay = document.getElement
+    let overlay = document.getElementById("overlay");
+    overlay.innerHTML = `
+        <div id="terminal"></div>
+        <div id="progressBar"><div id="progress"></div></div>
+    `;
+
+    let terminal = document.getElementById("terminal");
+
+    let commands = [
+        "Initializing override protocol...",
+        "Bypassing security layers...",
+        "Decrypting hidden entity...",
+        "Injecting unknown payload...",
+        "System integrity compromised...",
+        "Launching dangerous unlock sequence..."
+    ];
+
+    let i = 0;
+
+    function typeLine(){
+        if(i < commands.length){
+            let line = commands[i];
+            let charIndex = 0;
+            let lineElement = document.createElement("div");
+            terminal.appendChild(lineElement);
+
+            let typing = setInterval(()=>{
+                lineElement.textContent += line.charAt(charIndex);
+                charIndex++;
+                if(charIndex >= line.length){
+                    clearInterval(typing);
+                    i++;
+                    setTimeout(typeLine,500);
+                }
+            },30);
+        } else {
+            startLoading();
+        }
+    }
+
+    typeLine();
+}
+
+// ---------- CARGA POSEÍDA ----------
+
+function startLoading(){
+
+    let progress = document.getElementById("progress");
+    let terminal = document.getElementById("terminal");
+
+    let width = 0;
+    let stuck = false;
+
+    let loading = setInterval(()=>{
+
+        if(!stuck){
+            width += 2;
+            progress.style.width = width + "%";
+        }
+
+        if(width >= 66 && !stuck){
+            stuck = true;
+            progress.style.width = "66%";
+
+            let warning = document.createElement("div");
+            warning.style.color="red";
+            warning.textContent = "ERROR... ENTITY RESISTING...";
+            terminal.appendChild(warning);
+
+            document.body.style.animation="shake 0.1s infinite";
+
+            setTimeout(()=>{
+                document.body.style.animation="";
+                warning.textContent="FORCING OVERRIDE...";
+                forceFinish();
+            },3000);
+        }
+
+    },60);
+
+    function forceFinish(){
+        let jump = setInterval(()=>{
+            width += 5;
+            progress.style.width = width + "%";
+
+            if(width >= 100){
+                clearInterval(jump);
+                clearInterval(loading);
+
+                let flash = document.createElement("div");
+                flash.style.position="fixed";
+                flash.style.top=0;
+                flash.style.left=0;
+                flash.style.width="100%";
+                flash.style.height="100%";
+                flash.style.background="white";
+                flash.style.zIndex="9999";
+                document.body.appendChild(flash);
+
+                setTimeout(()=>{
+                    window.location.href="https://tupaginagrotesca.com";
+                },400);
+            }
+        },40);
+    }
+}
+
+</script>
+</body>
+</html>
