@@ -1,291 +1,199 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Door-01 | Key#01</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
-    <style>
-        :root {
-            --primary-color: #1DB954; /* Verde oficial de Spotify */
-            --bg-dark: #000000; /* Fondo negro puro */
-            --card-bg: #121212; /* Gris muy oscuro para las tarjetas */
-            --card-border: #282828; /* Gris para bordes */
-            --text-color: #ffffff;
-        }
+<meta charset="UTF-8">
+<title>System Hub</title>
 
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-color);
-        }
+<style>
+    body {
+        margin: 0;
+        background: black;
+        overflow: hidden;
+        font-family: monospace;
+        color: #0f0;
+        cursor: none;
+    }
 
-        .container {
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+    #logs {
+        position: absolute;
+        top: 20%;
+        width: 100%;
+        text-align: center;
+        font-size: 18px;
+        opacity: 0;
+    }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .header-img {
-            width: 300px; /* Ajusta el tamaño de tu imagen aquí */
-            height: 50px;
-            /*border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary-color);*/
-            }
-        h1 { 
-            color: var(--primary-color); 
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 2rem;
-            margin: 0;
-        }
+    .glitch {
+        animation: glitch 0.2s infinite;
+    }
 
-        h2 { 
-            font-size: 1.2rem; 
-            margin-top: 50px; 
-            color: #b3b3b3;
-            border-bottom: 1px solid var(--card-border);
-            padding-bottom: 10px;
-        }
+    @keyframes glitch {
+        0% { filter: hue-rotate(0deg) contrast(2); }
+        50% { filter: hue-rotate(180deg) contrast(5); }
+        100% { filter: hue-rotate(0deg) contrast(2); }
+    }
 
-                /* Buscador */
-        .search-container {
-            position: relative;
-            margin-bottom: 40px;
-        }
+    #redPoint {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        background: red;
+        border-radius: 50%;
+        opacity: 0;
+        pointer-events: auto;
+        transition: transform 0.1s linear;
+    }
 
-        .search-container i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #888;
-        }
-
-        #playlistSearch {
-            width: 100%;
-            padding: 15px 15px 15px 45px;
-            background: #242424;
-            border: 1px solid var(--card-border);
-            border-radius: 50px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-
-        #playlistSearch:focus {
-            border-color: var(--primary-color);
-            background: #2a2a2a;
-            box-shadow: 0 0 10px rgba(29, 185, 84, 0.2);
-        }
-
-        h2 { 
-            font-size: 1.1rem; 
-            margin-top: 40px; 
-            color: #b3b3b3;
-            border-bottom: 1px solid var(--card-border);
-            padding-bottom: 10px;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        /* Tarjetas de Playlist */
-        /*.playlist-item: /*{
-            /*transition: transform 0.3s ease;
-             li a:*//*hover {
-            background: #282828;
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(29, 185, 84, 0.2);
-        }*/
-
-        /* Ocultar elementos cuando no coinciden con la búsqueda */
-        .hidden {
-            display: none;
-        }
-        /* Contenedor de la lista */
-        ul {
-            list-style: none;
-            padding: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        /* Estilo de los botones */
-        li a {
-            display: flex;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 16px 20px;
-            border-radius: 8px; /* Bordes ligeramente redondeados */
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s ease;
-            border: 1px solid var(--card-border);
-            font-weight: 500;
-        }
-
-        li a i {
-            margin-right: 15px;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-        }
-
-        /* Efecto al pasar el mouse */
-        li a:hover {
-            background: #282828;
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(29, 185, 84, 0.2);
-        }
-
-        .widget-container {
-            margin-top: 60px;
-            background: #121212;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--card-border);
-        }
-
-        footer {
-            margin-top: 50px;
-            text-align: center;
-            padding-bottom: 40px;
-        }
-
-        /* Estilo para el contador */
-        .footer-counter {
-            filter: invert(1); /* Invierte color del contador si es necesario para fondo negro */
-            opacity: 0.5;
-        }
-    </style>
+    #accessText {
+        position: absolute;
+        bottom: 20%;
+        width: 100%;
+        text-align: center;
+        color: red;
+        font-size: 16px;
+        opacity: 0;
+    }
+</style>
 </head>
 <body>
 
-    <div class="container">
-        
-        <header>
-            <img src="systemtag-gif2.gif" class="header-img">
-            <h1><!--<i class="fab fa-spotify"></i>--> Bienvenido a Signal</h1>
-<div class="core-access">
-    <a href="https://baphomet1984.github.io/signal-core/" class="core-button">
-        <i class="fa-solid fa-layer-group"></i>
-        Acceder a Signal Core
-    </a>
-</div>
-        </header>
-        <div class="hub-status">
-            <p>Estado:<span id="hub-status"></span></p>
-            <p>Última mutación: <span id="hub-date"></span></p>
-        </div>   
-        <div class="search-container">
-            <i class="fa fa-search"></i>
-            <input type="text" id="playlistSearch" placeholder="Buscar playlist...">
-        </div>
-        <!-- Elfsight WhatsApp Chat | Untitled WhatsApp Chat -->
-<script src="https://elfsightcdn.com/platform.js" async></script>
-<div class="elfsight-app-1c4d0ae1-891a-4847-86b0-00553260b99b" data-elfsight-app-lazy></div>
-        <main>
-            <h2>Perfil Sonoro>seleccion personal del portador</h2>
-           <ul class="playlist-group">
-               <!--PLAYLIST PERSONALIZADAS-->
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1EIXuvYF1J44v1?si=4KBqYQeCRYSa7QI1GBRuzg"><i class="fab fa-spotify"></i> 1.Manson</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1E4xadFD2IyUbd?si=k3iJLuTITFaWM7hiddSyBQ"><i class="fab fa-spotify"></i> 2.Gotico</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DXcfZ6moR6J0G?si=EnT90tSRRwaTbFD2N0vfGQ"><i class="fab fa-spotify"></i> 3.New Metal</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DWTe5ECpTKzMo?si=dTi2iGlEQJqUDQCHhXrLrQ"><i class="fab fa-spotify"></i> 4.Hip Hop MX 24K</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1EIea0ChiRU7ji?si=Eh1WKcBvQBqTfx3IcVPR-Q"><i class="fab fa-spotify"></i> 5.Doom</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DWTmGGCbcoQhY?si=9htAtALLTWqE3o3LG9TqNg"><i class="fab fa-spotify"></i> 6. CUMBIA SONIDERA</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/1z9BMuPLZE7bVemN5E85rV?si=vs4BVFxjTgyUycoBLQpARQ"><i class="fab fa-spotify"></i> 7. HITS TIKTOK MEXICO</a></li>
-                </ul>
-            <!--REPRODUCTOR DE SPOTIFY-->
-            <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZEVXdezsuDdNH1jV?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+<div id="logs"></div>
+<div id="redPoint"></div>
+<div id="accessText">ACCESS GRANTED</div>
 
-            <h2>Catarsis y Ruido controlado</h2>
-            <ul class="playlist-group">
-                <!--    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1EIea0ChiRU7ji?si=l1tpgnOTSceRtCiN5SMSWQ"><i class="fab fa-spotify"></i> 8. METAL DENSO</a></li>-->
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DWYMHB55fgZrY?si=C0gKOkwdS_OKb2gXXrERkQ"><i class="fab fa-spotify"></i> 9. ROCK MEXICANO</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1EIcM7vKLqtJgT?si=MU8P6kObS_efOEAuU7b73A"><i class="fab fa-spotify"></i> 10. TECHNO OSCURO</a></li>
-                <!--    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DWTe5ECpTKzMo?si=8IR6Y2vHRByTr_w5FnmT_w"><i class="fab fa-spotify"></i> 11. HIP-HOP MX 24K</a></li>-->
-                </ul>   
-
-            <div class="widget-container">
-                <iframe src='https://widget.spreaker.com/player?show_id=6247023&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true' width='100%' height='400px' title='el panda show' frameborder='0'></iframe>
-            </div>
-        </main>
-
-        <footer>
-            <div class="footer-counter">
-                <script type="text/javascript" src="https://contador.websiteout.com/js/2/5/0/0"></script>
-            </div>
-        </footer>
-    </div>
-    <script>
-        document.getElementById('playlistSearch').addEventListener('keyup', function() {
-            let filter = this.value.toUpperCase();
-            let items = document.querySelectorAll('.playlist-item');
-
-            items.forEach(item => {
-                let text = item.textContent || item.innerText;
-                if (text.toUpperCase().indexOf(filter) > -1) {
-                    item.classList.remove('hidden');
-                } else {
-                    item.classList.add('hidden');
-                }
-            });
-        });
-    </script>
 <script>
-    
-const statusElement = document.getElementById("hub-status");
-const now = new Date();
-const hour = now.getHours();
 
-let statusText = "";
+let systemState = "normal";
+const logsDiv = document.getElementById("logs");
+const redPoint = document.getElementById("redPoint");
+const accessText = document.getElementById("accessText");
 
-if (hour >= 6 && hour < 12) {
-    statusText = " despertando";
-} else if (hour >= 12 && hour < 18) {
-    statusText = " activo";
-} else if (hour >= 18 && hour < 23) {
-    statusText = " observandote";
-} else {
-    statusText = " viendo que no duermes";
+let lastInteraction = Date.now();
+let holdInterval;
+let holdTime = 0;
+let flickerActive = false;
+let redX = window.innerWidth / 2;
+let redY = window.innerHeight / 2;
+
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-statusElement.textContent = statusText.toUpperCase();
-    const dateElement = document.getElementById("hub-date");
+function setState(state) {
+    systemState = state;
+    console.log("STATE:", state);
+}
 
-    const today = new Date();
+async function startSequence() {
 
-    const options = {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric"
-    };
+    // 1️⃣ Glitch
+    setState("glitch");
+    document.body.classList.add("glitch");
+    await wait(3000);
+    document.body.classList.remove("glitch");
 
-    const formattedDate = today.toLocaleDateString("es-MX", options);
+    // 2️⃣ Logs
+    setState("logs");
+    logsDiv.style.opacity = 1;
+    logsDiv.innerHTML = `
+        [CRITICAL] System integrity compromised<br>
+        [WARN] Avatar instance unstable<br>
+        [FAIL] Kernel response timeout
+    `;
+    await wait(3000);
+    logsDiv.style.opacity = 0;
 
-    dateElement.textContent = formattedDate;
+    // 3️⃣ Silencio
+    setState("silence");
+    await wait(5000);
+
+    // 4️⃣ Punto rojo
+    spawnRedPoint();
+}
+
+function spawnRedPoint() {
+    setState("redIdle");
+
+    redPoint.style.opacity = 0.1;
+    redPoint.style.left = redX + "px";
+    redPoint.style.top = redY + "px";
+
+    flickerActive = true;
+    flicker();
+    idleMovement();
+}
+
+function flicker() {
+    if (!flickerActive) return;
+
+    redPoint.style.opacity = Math.random() * 0.6 + 0.2;
+
+    setTimeout(flicker, Math.random() * 1500 + 200);
+}
+
+function idleMovement() {
+    if (systemState === "redIdle") {
+        if (Date.now() - lastInteraction > 3000) {
+            redX += (Math.random() - 0.5) * 4;
+            redY += (Math.random() - 0.5) * 4;
+
+            redPoint.style.left = redX + "px";
+            redPoint.style.top = redY + "px";
+        }
+    }
+
+    requestAnimationFrame(idleMovement);
+}
+
+document.addEventListener("mousemove", () => {
+    lastInteraction = Date.now();
+});
+
+redPoint.addEventListener("mousedown", () => {
+
+    if (systemState !== "redIdle") return;
+
+    holdTime = 0;
+
+    holdInterval = setInterval(() => {
+        holdTime += 100;
+
+        redPoint.style.transform = `scale(${1 + holdTime / 3000})`;
+
+        if (holdTime >= 3000) {
+            clearInterval(holdInterval);
+            awakenRedPoint();
+        }
+
+    }, 100);
+});
+
+document.addEventListener("mouseup", () => {
+    clearInterval(holdInterval);
+    redPoint.style.transform = "scale(1)";
+});
+
+function awakenRedPoint() {
+    setState("readyToOpen");
+
+    flickerActive = false;
+    redPoint.style.opacity = 1;
+    redPoint.style.transform = "scale(1.5)";
+    accessText.style.opacity = 1;
+}
+
+document.addEventListener("click", () => {
+    if (systemState === "readyToOpen") {
+        document.body.style.background = "black";
+        setTimeout(() => {
+            window.location.href = "https://tupagina.com";
+        }, 500);
+    }
+});
+
+// Inicia automáticamente
+startSequence();
+
 </script>
-
 </body>
 </html>
