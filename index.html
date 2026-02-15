@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Signal Corrupted</title>
+<title>Signal Entity</title>
 
 <style>
 body{
@@ -13,7 +13,7 @@ body{
     color:#0f0;
 }
 
-/* Efecto CRT */
+/* CRT */
 body::after{
     content:"";
     position:fixed;
@@ -23,21 +23,20 @@ body::after{
     height:100%;
     background:repeating-linear-gradient(
         to bottom,
-        rgba(0,255,0,0.05) 0px,
-        rgba(0,255,0,0.05) 1px,
+        rgba(0,255,0,0.04) 0px,
+        rgba(0,255,0,0.04) 1px,
         transparent 2px,
         transparent 3px
     );
     pointer-events:none;
 }
 
-/* Fragmentos */
+/* Código flotante */
 .code-fragment{
     position:absolute;
     opacity:0.2;
     user-select:none;
     pointer-events:none;
-    transition:0.3s;
 }
 
 /* Punto rojo */
@@ -53,30 +52,34 @@ body::after{
     cursor:pointer;
 }
 
-/* Pantalla fail */
-#failScreen{
+/* Overlay mensajes */
+#overlay{
     position:fixed;
     top:0;
     left:0;
     width:100%;
     height:100%;
-    background:black;
-    color:red;
     display:none;
     justify-content:center;
     align-items:center;
     flex-direction:column;
     font-size:2rem;
+    color:red;
     text-align:center;
-    animation: glitch 0.15s infinite;
+    background:black;
+}
+
+/* Glitch fuerte */
+.glitch{
+    animation: glitch 0.12s infinite;
 }
 
 @keyframes glitch{
     0%{transform:translate(0);}
-    20%{transform:translate(-5px,5px);}
-    40%{transform:translate(5px,-5px);}
-    60%{transform:translate(-3px,3px);}
-    80%{transform:translate(3px,-3px);}
+    20%{transform:translate(-6px,6px);}
+    40%{transform:translate(6px,-6px);}
+    60%{transform:translate(-4px,4px);}
+    80%{transform:translate(4px,-4px);}
     100%{transform:translate(0);}
 }
 </style>
@@ -85,17 +88,11 @@ body::after{
 <body>
 
 <div id="signal"></div>
-
-<div id="failScreen">
-    <div>SYSTEM FAILURE</div>
-    <div style="font-size:1rem;color:white;margin-top:20px;">
-        Touch to continue...
-    </div>
-</div>
+<div id="overlay"></div>
 
 <script>
 
-// --------- FRAGMENTOS QUE SE DESCOMPONEN ---------
+// -------- CÓDIGO VIVO --------
 
 const fragments = [
 "kernel.panic()",
@@ -108,7 +105,7 @@ const fragments = [
 "segmentation_fault"
 ];
 
-for(let i=0;i<45;i++){
+for(let i=0;i<50;i++){
     let span = document.createElement("div");
     span.className="code-fragment";
     span.innerText = fragments[Math.floor(Math.random()*fragments.length)];
@@ -119,16 +116,15 @@ for(let i=0;i<45;i++){
 
     setInterval(()=>{
         let text = span.innerText;
-        let glitchIndex = Math.floor(Math.random()*text.length);
-        let randomChar = String.fromCharCode(33+Math.random()*94);
+        let i = Math.floor(Math.random()*text.length);
         span.innerText =
-            text.substring(0,glitchIndex) +
-            randomChar +
-            text.substring(glitchIndex+1);
+            text.substring(0,i) +
+            String.fromCharCode(33+Math.random()*94) +
+            text.substring(i+1);
     },1000 + Math.random()*2000);
 }
 
-// --------- PUNTO ROJO VIVO ---------
+// -------- PUNTO VIVO --------
 
 let signal = document.getElementById("signal");
 let holdTimer;
@@ -139,12 +135,12 @@ setInterval(()=>{
     signal.style.opacity = Math.random() > 0.7 ? 0.3 : 1;
 },300);
 
-// Intento de escape leve
+// Movimiento nervioso
 setInterval(()=>{
     let x = Math.random()*8 -4;
     let y = Math.random()*8 -4;
     signal.style.transform = `translate(${x}px,${y}px)`;
-},800);
+},700);
 
 signal.addEventListener("mousedown", startHold);
 signal.addEventListener("touchstart", startHold);
@@ -154,35 +150,68 @@ signal.addEventListener("mouseleave", cancelHold);
 signal.addEventListener("touchend", cancelHold);
 
 function startHold(){
-    holdTimer = setTimeout(triggerFail, holdTime);
+    holdTimer = setTimeout(startSequence, holdTime);
 }
 
 function cancelHold(){
     clearTimeout(holdTimer);
 }
 
-// --------- SECUENCIA FAIL ---------
+// -------- SECUENCIA CINEMÁTICA --------
 
-function triggerFail(){
-
-    document.querySelectorAll(".code-fragment").forEach(e=>e.remove());
-    signal.remove();
+function startSequence(){
 
     if(navigator.vibrate){
         navigator.vibrate([200,100,200]);
     }
 
-    let fail = document.getElementById("failScreen");
-    fail.style.display="flex";
+    document.querySelectorAll(".code-fragment").forEach(e=>e.remove());
+    signal.remove();
 
-    let audio = new Audio();
-    audio.src="https://assets.mixkit.co/sfx/preview/mixkit-glitch-distortion-2898.mp3";
-    audio.play();
+    let overlay = document.getElementById("overlay");
+    overlay.style.display="flex";
+
+    let messages = [
+        "Signal Detected...",
+        "Unauthorized Access...",
+        "Entity Awakening..."
+    ];
+
+    let index = 0;
+
+    function nextMessage(){
+        if(index < messages.length){
+            overlay.innerHTML = "<div class='glitch'>"+messages[index]+"</div>";
+            index++;
+            setTimeout(nextMessage, 1800);
+        } else {
+            blackout();
+        }
+    }
+
+    nextMessage();
 }
 
-// --------- TOQUE FINAL ---------
+// -------- APAGÓN + SYSTEM FAILURE --------
 
-document.getElementById("failScreen").addEventListener("click",()=>{
+function blackout(){
+    let overlay = document.getElementById("overlay");
+    overlay.innerHTML="";
+    overlay.style.background="black";
+
+    setTimeout(()=>{
+        overlay.innerHTML="<div class='glitch'>SYSTEM FAILURE</div><div style='font-size:1rem;color:white;margin-top:20px;'>Touch to continue...</div>";
+
+        let audio = new Audio();
+        audio.src="https://assets.mixkit.co/sfx/preview/mixkit-glitch-distortion-2898.mp3";
+        audio.play();
+
+    },800);
+}
+
+// -------- TOQUE FINAL --------
+
+document.getElementById("overlay").addEventListener("click",()=>{
     window.location.href="https://tupaginagrotesca.com";
 });
 
