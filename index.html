@@ -123,6 +123,8 @@ const fragments = [
 "inject.override()",
 "segmentation_fault"
 ];
+let failureReady = false;
+let touchCount = 0;
 
 for(let i=0;i<40;i++){
     let span=document.createElement("div");
@@ -147,9 +149,25 @@ let signal=document.getElementById("signal");
 let overlay=document.getElementById("overlay");
 let holdTimer;
 overlay.addEventListener("click", function(){
-    if(overlay.innerText.includes("SYSTEM FAILURE")){
+
+    if(!failureReady) return;
+
+    touchCount++;
+
+    if(touchCount === 1){
+        // Primer toque: no hace nada
+        overlay.style.opacity = "0.9";
+        setTimeout(()=>{
+            overlay.style.opacity = "1";
+        },120);
+        return;
+    }
+
+    if(touchCount === 2){
+        failureReady = false;
         startTerminal();
     }
+
 });
 setInterval(()=>{
     signal.style.opacity=Math.random()>0.7?0.3:1;
@@ -218,6 +236,10 @@ function startSequence(){
                     <div class='glitch'>SYSTEM FAILURE</div>
                    <!-- <div style='color:white;margin-top:20px;'>Touch to continue...</div>-->
                 `;
+setTimeout(()=>{
+    failureReady = true;
+    touchCount = 0;
+},800);
             },1200);
         }
     }
