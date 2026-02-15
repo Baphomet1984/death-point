@@ -175,23 +175,53 @@ function cancelHold(){
 function startSequence(){
 
     if(navigator.vibrate){
-        navigator.vibrate([200,100,200]);
+        navigator.vibrate([200,100,200,100,400]);
     }
 
     document.querySelectorAll(".code-fragment").forEach(e=>e.remove());
     signal.remove();
 
-    
     overlay.style.display="flex";
 
-    overlay.innerHTML="<div class='glitch'>SYSTEM FAILURE</div><div style='color:white;margin-top:20px;'>Touch to continue...</div>";
-}
+    overlay.innerHTML = `
+        <div id="warning" style="color:red;font-size:1.4rem;text-align:center;"></div>
+    `;
 
-overlay.addEventListener("click",startTerminal);
+    const warning = document.getElementById("warning");
+
+    const warnings = [
+        "UNAUTHORIZED ACCESS DETECTED",
+        "INTRUSION PROTOCOL ACTIVATED",
+        "CORE INSTABILITY RISING",
+        "ENTITY AWAKENING",
+        "SYSTEM BREACH IMMINENT"
+    ];
+
+    let i = 0;
+
+    function showWarning(){
+        if(i < warnings.length){
+            warning.innerText = warnings[i];
+            warning.style.opacity = 0;
+            warning.style.transition = "opacity 0.6s";
+            setTimeout(()=> warning.style.opacity = 1, 50);
+            i++;
+            setTimeout(showWarning, 1200);
+        } else {
+            setTimeout(()=>{
+                overlay.innerHTML = `
+                    <div class='glitch'>SYSTEM FAILURE</div>
+                    <div style='color:white;margin-top:20px;'>Touch to continue...</div>
+                `;
+            },1200);
+        }
+    }
+
+    showWarning();
+}
 
 function startTerminal(){
 
-    let overlay=document.getElementById("overlay");
     overlay.innerHTML=`
         <div id="terminal"></div>
         <div id="progressBar"><div id="progress"></div></div>
@@ -200,61 +230,97 @@ function startTerminal(){
     let terminal=document.getElementById("terminal");
     let progress=document.getElementById("progress");
 
-    terminal.innerText="Launching dangerous unlock sequence...\n";
+    const lines = [
+        "Initializing override protocol...",
+        "Bypassing encrypted layers...",
+        "Accessing restricted memory blocks...",
+        "Injecting unstable payload...",
+        "WARNING: Resistance detected...",
+        "Forcing compliance..."
+    ];
 
-    let width=0;
-    let stuck=false;
+    let lineIndex = 0;
 
-    let loading=setInterval(()=>{
-
-        if(!stuck){
-            width+=2;
-            progress.style.width=width+"%";
-        }
-
-        if(width>=66 && !stuck){
-            stuck=true;
-            progress.style.width="66%";
-
-            terminal.innerText+="\nERROR... ENTITY RESISTING...\n";
-            document.body.style.animation="shake 0.1s infinite";
-
-            setTimeout(()=>{
-                document.body.style.animation="";
-                terminal.innerText+="FORCING OVERRIDE...\n";
-                forceFinish();
-            },3000);
-        }
-
-    },60);
-
-    function forceFinish(){
-        let jump=setInterval(()=>{
-            width+=5;
-            progress.style.width=width+"%";
-
-            if(width>=100){
-                clearInterval(jump);
-                clearInterval(loading);
-
-                let flash=document.createElement("div");
-                flash.style.position="fixed";
-                flash.style.top=0;
-                flash.style.left=0;
-                flash.style.width="100%";
-                flash.style.height="100%";
-                flash.style.background="white";
-                flash.style.zIndex="9999";
-                document.body.appendChild(flash);
-
-                setTimeout(()=>{
-                    window.location.href="https://tupaginagrotesca.com";
-                },400);
+    function typeLine(text, callback){
+        let i=0;
+        let interval=setInterval(()=>{
+            terminal.innerText += text[i];
+            i++;
+            if(i>=text.length){
+                clearInterval(interval);
+                terminal.innerText += "\n";
+                setTimeout(callback,800);
             }
         },40);
     }
-}
 
+    function nextLine(){
+        if(lineIndex < lines.length){
+            typeLine(lines[lineIndex], ()=>{
+                lineIndex++;
+                nextLine();
+            });
+        } else {
+            startLoading();
+        }
+    }
+
+    function startLoading(){
+        let width=0;
+        let stuck=false;
+
+        let loading=setInterval(()=>{
+
+            if(!stuck){
+                width+=1;
+                progress.style.width=width+"%";
+            }
+
+            if(width>=66 && !stuck){
+                stuck=true;
+                progress.style.width="66%";
+
+                terminal.innerText+="\nENTITY REFUSING SHUTDOWN...\n";
+                document.body.style.animation="shake 0.1s infinite";
+
+                setTimeout(()=>{
+                    document.body.style.animation="";
+                    terminal.innerText+="OVERRIDE SUCCESSFUL.\n";
+                    forceFinish();
+                },4000);
+            }
+
+        },80);
+
+        function forceFinish(){
+            let jump=setInterval(()=>{
+                width+=3;
+                progress.style.width=width+"%";
+
+                if(width>=100){
+                    clearInterval(jump);
+                    clearInterval(loading);
+
+                    let flash=document.createElement("div");
+                    flash.style.position="fixed";
+                    flash.style.top=0;
+                    flash.style.left=0;
+                    flash.style.width="100%";
+                    flash.style.height="100%";
+                    flash.style.background="white";
+                    flash.style.zIndex="9999";
+                    document.body.appendChild(flash);
+
+                    setTimeout(()=>{
+                        window.location.href="https://tupaginagrotesca.com";
+                    },600);
+                }
+            },60);
+        }
+    }
+
+    nextLine();
+}
 </script>
 </body>
 </html>
