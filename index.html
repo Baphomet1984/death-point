@@ -2,289 +2,189 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Signal Hub</title>
+<title>Signal Corrupted</title>
 
 <style>
-
-/* ===============================
-   BASE
-================================ */
-body {
-    margin: 0;
-    background: #000;
-    color: #00ff99;
+body{
+    margin:0;
+    background:black;
+    overflow:hidden;
     font-family: monospace;
-    overflow: hidden;
+    color:#0f0;
 }
 
-#hub-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
+/* Efecto CRT */
+body::after{
+    content:"";
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:repeating-linear-gradient(
+        to bottom,
+        rgba(0,255,0,0.05) 0px,
+        rgba(0,255,0,0.05) 1px,
+        transparent 2px,
+        transparent 3px
+    );
+    pointer-events:none;
 }
 
-/* ===============================
-   AVATAR
-================================ */
-#avatar {
-    position: absolute;
-    top: 35%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 50px;
-    opacity: 0.8;
+/* Fragmentos */
+.code-fragment{
+    position:absolute;
+    opacity:0.2;
+    user-select:none;
+    pointer-events:none;
+    transition:0.3s;
 }
 
-/* ===============================
-   MENU BOTONES
-================================ */
-#menu {
-    position: absolute;
-    top: 60%;
-    left: 50%;
-    transform: translateX(-50%);
-    list-style: none;
-    padding: 0;
-    text-align: center;
+/* Punto rojo */
+#signal{
+    position:fixed;
+    top:15px;
+    left:15px;
+    width:18px;
+    height:18px;
+    background:red;
+    border-radius:50%;
+    box-shadow:0 0 15px red;
+    cursor:pointer;
 }
 
-#menu li {
-    margin: 10px 0;
+/* Pantalla fail */
+#failScreen{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:black;
+    color:red;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    font-size:2rem;
+    text-align:center;
+    animation: glitch 0.15s infinite;
 }
 
-#menu a {
-    color: #00ff99;
-    text-decoration: none;
-    font-size: 16px;
-    transition: color 0.3s ease;
+@keyframes glitch{
+    0%{transform:translate(0);}
+    20%{transform:translate(-5px,5px);}
+    40%{transform:translate(5px,-5px);}
+    60%{transform:translate(-3px,3px);}
+    80%{transform:translate(3px,-3px);}
+    100%{transform:translate(0);}
 }
-
-#menu a:hover {
-    color: #ffffff;
-}
-
-/* ===============================
-   STATUS
-================================ */
-#hub-status {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    font-size: 14px;
-}
-
-/* ===============================
-   SYSTEM FAIL → PUNTO ROJO
-================================ */
-#systemFailBtn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 14px;
-    height: 14px;
-    background: red;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 0 10px red;
-    transition: transform 0.15s ease, box-shadow 0.3s ease;
-}
-
-#systemFailBtn.pressing {
-    transform: scale(1.6);
-    box-shadow: 0 0 25px red;
-}
-
-/* ===============================
-   OVERLAY KERNEL
-================================ */
-#kernelOverlay {
-    position: fixed;
-    inset: 0;
-    background: black;
-    display: none;
-    z-index: 20000;
-    padding: 40px;
-    box-sizing: border-box;
-    overflow-y: auto;
-}
-
-#kernelConsole {
-    white-space: pre-wrap;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-/* ===============================
-   GLITCH
-================================ */
-.glitch {
-    animation: glitchAnim 0.2s infinite;
-}
-
-@keyframes glitchAnim {
-    0% { filter: contrast(1) hue-rotate(0deg); }
-    50% { filter: contrast(4) hue-rotate(180deg); }
-    100% { filter: contrast(1) hue-rotate(0deg); }
-}
-
 </style>
 </head>
 
 <body>
 
-<div id="hub-container">
+<div id="signal"></div>
 
-    <div id="avatar">◉</div>
-
-    <ul id="menu">
-        <li><a href="https://google.com" target="_blank">NAVEGADOR</a></li>
-        <li><a href="https://youtube.com" target="_blank">VIDEO</a></li>
-        <li><a href="https://github.com" target="_blank">CÓDIGO</a></li>
-        <li><a href="https://openai.com" target="_blank">IA</a></li>
-        <li><a href="https://wikipedia.org" target="_blank">ARCHIVOS</a></li>
-    </ul>
-
-    <div id="hub-status">ESTABLE</div>
-
-    <!-- Punto rojo System Fail -->
-    <button id="systemFailBtn"></button>
-
-</div>
-
-<div id="kernelOverlay">
-    <div id="kernelConsole"></div>
+<div id="failScreen">
+    <div>SYSTEM FAILURE</div>
+    <div style="font-size:1rem;color:white;margin-top:20px;">
+        Touch to continue...
+    </div>
 </div>
 
 <script>
 
-/* ===============================
-   VARIABLES
-================================ */
-const systemBtn = document.getElementById("systemFailBtn");
-const kernelOverlay = document.getElementById("kernelOverlay");
-const kernelConsole = document.getElementById("kernelConsole");
-const hubStatus = document.getElementById("hub-status");
+// --------- FRAGMENTOS QUE SE DESCOMPONEN ---------
 
-let holdTimeout;
-let kernelActive = false;
+const fragments = [
+"kernel.panic()",
+"ERR_FATAL_SIGNAL",
+"memory_corruption",
+"void main(){ }",
+"0x004F3A",
+"decrypt.fail",
+"inject.override()",
+"segmentation_fault"
+];
 
-/* ===============================
-   HOLD 3 SEGUNDOS
-================================ */
-function startHold() {
-    if (kernelActive) return;
+for(let i=0;i<45;i++){
+    let span = document.createElement("div");
+    span.className="code-fragment";
+    span.innerText = fragments[Math.floor(Math.random()*fragments.length)];
+    span.style.top = Math.random()*100+"vh";
+    span.style.left = Math.random()*100+"vw";
+    span.style.fontSize = (12 + Math.random()*18)+"px";
+    document.body.appendChild(span);
 
-    systemBtn.classList.add("pressing");
-
-    holdTimeout = setTimeout(() => {
-        activateKernel();
-    }, 3000);
+    setInterval(()=>{
+        let text = span.innerText;
+        let glitchIndex = Math.floor(Math.random()*text.length);
+        let randomChar = String.fromCharCode(33+Math.random()*94);
+        span.innerText =
+            text.substring(0,glitchIndex) +
+            randomChar +
+            text.substring(glitchIndex+1);
+    },1000 + Math.random()*2000);
 }
 
-function cancelHold() {
-    systemBtn.classList.remove("pressing");
-    clearTimeout(holdTimeout);
+// --------- PUNTO ROJO VIVO ---------
+
+let signal = document.getElementById("signal");
+let holdTimer;
+let holdTime = 1500;
+
+// Parpadeo irregular
+setInterval(()=>{
+    signal.style.opacity = Math.random() > 0.7 ? 0.3 : 1;
+},300);
+
+// Intento de escape leve
+setInterval(()=>{
+    let x = Math.random()*8 -4;
+    let y = Math.random()*8 -4;
+    signal.style.transform = `translate(${x}px,${y}px)`;
+},800);
+
+signal.addEventListener("mousedown", startHold);
+signal.addEventListener("touchstart", startHold);
+
+signal.addEventListener("mouseup", cancelHold);
+signal.addEventListener("mouseleave", cancelHold);
+signal.addEventListener("touchend", cancelHold);
+
+function startHold(){
+    holdTimer = setTimeout(triggerFail, holdTime);
 }
 
-systemBtn.addEventListener("mousedown", startHold);
-systemBtn.addEventListener("mouseup", cancelHold);
-systemBtn.addEventListener("mouseleave", cancelHold);
-systemBtn.addEventListener("touchstart", startHold);
-systemBtn.addEventListener("touchend", cancelHold);
+function cancelHold(){
+    clearTimeout(holdTimer);
+}
 
-/* ===============================
-   ACTIVAR KERNEL
-================================ */
-function activateKernel() {
+// --------- SECUENCIA FAIL ---------
 
-    kernelActive = true;
+function triggerFail(){
 
-    if (navigator.vibrate) {
-        navigator.vibrate([200, 100, 200]);
+    document.querySelectorAll(".code-fragment").forEach(e=>e.remove());
+    signal.remove();
+
+    if(navigator.vibrate){
+        navigator.vibrate([200,100,200]);
     }
 
-    document.body.classList.add("glitch");
+    let fail = document.getElementById("failScreen");
+    fail.style.display="flex";
 
-    setTimeout(() => {
-        document.body.classList.remove("glitch");
-        openOverlay();
-    }, 2000);
+    let audio = new Audio();
+    audio.src="https://assets.mixkit.co/sfx/preview/mixkit-glitch-distortion-2898.mp3";
+    audio.play();
 }
 
-function openOverlay() {
-    kernelOverlay.style.display = "block";
-    kernelConsole.innerHTML = "";
-    runKernelSequence();
-}
+// --------- TOQUE FINAL ---------
 
-/* ===============================
-   EFECTO ESCRITURA
-================================ */
-function typeLine(text, speed = 25) {
-    return new Promise(resolve => {
-        let i = 0;
-        const interval = setInterval(() => {
-            kernelConsole.innerHTML += text.charAt(i);
-            i++;
-            if (i >= text.length) {
-                clearInterval(interval);
-                kernelConsole.innerHTML += "\n";
-                resolve();
-            }
-        }, speed);
-    });
-}
-
-/* ===============================
-   SECUENCIA KERNEL
-================================ */
-async function runKernelSequence() {
-
-    const cpu = navigator.hardwareConcurrency || "unknown";
-    const memory = navigator.deviceMemory || "unknown";
-    const battery = navigator.getBattery ? await navigator.getBattery() : null;
-    const batteryLevel = battery ? Math.floor(battery.level * 100) + "%" : "unknown";
-
-    const lines = [
-        "[BOOT] Initializing Signal Core...",
-        "[KERNEL] Mounting anomaly layer...",
-        `[SCAN] CPU threads: ${cpu}`,
-        `[SCAN] RAM blocks: ${memory}GB`,
-        `[SCAN] Battery integrity: ${batteryLevel}`,
-        "[SYS] Checking entropy pool...",
-        "[OK] Entropy stabilized",
-        "[WARN] Behavioral anomaly detected",
-        "[KERNEL] Switching execution layer...",
-        "[MODE] KERNEL_DIVERGENCE_ACTIVE",
-        "[ROOT ACCESS] granted",
-        "[WARNING] You are not supposed to be here."
-    ];
-
-    for (let line of lines) {
-        await typeLine(line);
-    }
-
-    unlockSystem();
-}
-
-/* ===============================
-   DESBLOQUEO
-================================ */
-function unlockSystem() {
-
-    const msg = document.createElement("div");
-    msg.style.color = "#ff2e2e";
-    msg.innerHTML = "\n⚠ ACCESO OCULTO DESBLOQUEADO ⚠";
-    kernelConsole.appendChild(msg);
-
-    hubStatus.textContent = "CRÍTICO";
-    hubStatus.style.color = "red";
-
-    kernelOverlay.addEventListener("click", () => {
-        kernelOverlay.style.display = "none";
-    });
-}
+document.getElementById("failScreen").addEventListener("click",()=>{
+    window.location.href="https://tupaginagrotesca.com";
+});
 
 </script>
 
