@@ -13,248 +13,13 @@ body{
     color:#0f0;
 }
 
-/* CRT */
-body::after{
-    content:"";
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:repeating-linear-gradient(
-        to bottom,
-        rgba(0,255,0,0.04) 0px,
-        rgba(0,255,0,0.04) 1px,
-        transparent 2px,
-        transparent 3px
-    );
-    pointer-events:none;
-}
-
-/* Código flotante */
-.code-fragment{
-    position:absolute;
-    opacity:0.2;
-    user-select:none;
-    pointer-events:none;
-}
-
-/* Punto rojo */
-#signal{
-    position:fixed;
-    top:15px;
-    left:15px;
-    width:18px;
-    height:18px;
-    background:red;
-    border-radius:50%;
-    box-shadow:0 0 15px red;
-    cursor:pointer;
-}
-
-/* Overlay general */
-#overlay{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
-    text-align:center;
-    background:black;
-}
-
-/* Glitch */
-.glitch{
-    color:red;
-    font-size:2rem;
-    animation: glitch 0.12s infinite;
-}
-
-@keyframes glitch{
-    0%{transform:translate(0);}
-    20%{transform:translate(-6px,6px);}
-    40%{transform:translate(6px,-6px);}
-    60%{transform:translate(-4px,4px);}
-    80%{transform:translate(4px,-4px);}
-    100%{transform:translate(0);}
-}
-
-/* Terminal */
-#terminal{
-    color:#00ff00;
-    font-size:14px;
-    width:80%;
-    max-width:800px;
-    text-align:left;
-    white-space:pre-line;
-}
-
-#progressBar{
-    width:100%;
-    height:10px;
-    border:1px solid #00ff00;
-    margin-top:10px;
-}
-
-#progress{
-    height:100%;
-    width:0%;
-    background:#00ff00;
-}
-
-/* Shake */
-@keyframes shake{
-    0%{transform:translate(0);}
-    25%{transform:translate(-5px,5px);}
-    50%{transform:translate(5px,-5px);}
-    75%{transform:translate(-5px,-5px);}
-    100%{transform:translate(5px,5px);}
-}
-</style>
-</head>
-
-<body>
-
-<div id="signal"></div>
-<div id="overlay"></div>
-
-<script>
-
-// ---------- CÓDIGO FLOTANTE ----------
-
-const fragments = [
-"kernel.panic()",
-"ERR_FATAL_SIGNAL",
-"memory_corruption",
-"void main(){ }",
-"0x004F3A",
-"decrypt.fail",
-"inject.override()",
-"segmentation_fault"
-];
-
-for(let i=0;i<50;i++){
-    let span = document.createElement("div");
-    span.className="code-fragment";
-    span.innerText = fragments[Math.floor(Math.random()*fragments.length)];
-    span.style.top = Math.random()*100+"vh";
-    span.style.left = Math.random()*100+"vw";
-    span.style.fontSize = (12 + Math.random()*18)+"px";
-    document.body.appendChild(span);
-}
-
-// ---------- PUNTO ROJO ----------
-
-let signal = document.getElementById("signal");
-let holdTimer;
-
-signal.addEventListener("mousedown", startHold);
-signal.addEventListener("touchstart", startHold);
-signal.addEventListener("mouseup", cancelHold);
-signal.addEventListener("mouseleave", cancelHold);
-signal.addEventListener("touchend", cancelHold);
-
-function startHold(){
-    holdTimer = setTimeout(startSequence, 1500);
-}
-
-function cancelHold(){
-    clearTimeout(holdTimer);
-}
-
-// ---------- SECUENCIA INICIAL ----------
-
-function startSequence(){
-
-    document.querySelectorAll(".code-fragment").forEach(e=>e.remove());
-    signal.remove();
-
-    let overlay = document.getElementById("overlay");
-    overlay.style.display="flex";
-
-    let messages = [
-        "Signal Detected...",
-        "Unauthorized Access...",
-        "Entity Awakening..."
-    ];
-
-    let index = 0;
-
-    function nextMessage(){
-        if(index < messages.length){
-            overlay.innerHTML = "<div class='glitch'>"+messages[index]+"</div>";
-            index++;
-            setTimeout(nextMessage, 1800);
-        } else {
-            showFailure();
-        }
-    }
-
-    nextMessage();
-}
-
-// ---------- SYSTEM FAILURE ----------
-
-function showFailure(){
-    let overlay = document.getElementById("overlay");
-    overlay.innerHTML = "<div class='glitch'>SYSTEM FAILURE</div><div style='color:white;margin-top:20px;'>Touch to continue...</div>";
-}
-
-// ---------- TERMINAL FINAL ----------
-
-document.getElementById("overlay").addEventListener("click",()=>{
-    startTerminal();
-});
-
-function startTerminal(){
-
-    let overlay = document.getElementById("overlay");
-    overlay.innerHTML = `
-        <div id="terminal"></div>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Signal Entity</title>
-
-<style>
-body{
-    margin:0;
-    background:black;
-    overflow:hidden;
-    font-family: monospace;
-    color:#0f0;
-}
-
-/* CRT */
-body::after{
-    content:"";
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:repeating-linear-gradient(
-        to bottom,
-        rgba(0,255,0,0.04) 0px,
-        rgba(0,255,0,0.04) 1px,
-        transparent 2px,
-        transparent 3px
-    );
-    pointer-events:none;
-}
-
-/* Fragmentos vivos */
+/* Fragmentos */
 .code-fragment{
     position:absolute;
     opacity:0.15;
     user-select:none;
     pointer-events:none;
-    animation: pulse 4s infinite ease-in-out;
+    animation:pulse 4s infinite ease-in-out;
 }
 
 @keyframes pulse{
@@ -295,7 +60,7 @@ body::after{
 .glitch{
     color:red;
     font-size:2rem;
-    animation: glitch 0.12s infinite;
+    animation:glitch 0.12s infinite;
 }
 
 @keyframes glitch{
@@ -346,7 +111,7 @@ body::after{
 
 <script>
 
-// -------- FRAGMENTOS CORRUPTOS --------
+// -------- FRAGMENTOS --------
 
 const fragments = [
 "kernel.panic()",
@@ -359,59 +124,53 @@ const fragments = [
 "segmentation_fault"
 ];
 
-for(let i=0;i<50;i++){
-    let span = document.createElement("div");
+for(let i=0;i<40;i++){
+    let span=document.createElement("div");
     span.className="code-fragment";
-    span.innerText = fragments[Math.floor(Math.random()*fragments.length)];
-    span.style.top = Math.random()*100+"vh";
-    span.style.left = Math.random()*100+"vw";
-    span.style.fontSize = (12 + Math.random()*18)+"px";
+    span.innerText=fragments[Math.floor(Math.random()*fragments.length)];
+    span.style.top=Math.random()*100+"vh";
+    span.style.left=Math.random()*100+"vw";
+    span.style.fontSize=(12+Math.random()*18)+"px";
     document.body.appendChild(span);
 
-    // Corrupción letra por letra
     setInterval(()=>{
-        let text = span.innerText;
-        let index = Math.floor(Math.random()*text.length);
-        let randomChar = String.fromCharCode(33+Math.random()*94);
-        span.innerText =
-            text.substring(0,index) +
-            randomChar +
-            text.substring(index+1);
-    },1000 + Math.random()*2000);
+        let text=span.innerText;
+        let index=Math.floor(Math.random()*text.length);
+        let randomChar=String.fromCharCode(33+Math.random()*94);
+        span.innerText=text.substring(0,index)+randomChar+text.substring(index+1);
+    },1200+Math.random()*1500);
 }
 
-// -------- PUNTO ROJO VIVO --------
+// -------- PUNTO ROJO --------
 
-let signal = document.getElementById("signal");
+let signal=document.getElementById("signal");
 let holdTimer;
 
-// Parpadeo irregular orgánico
 setInterval(()=>{
-    signal.style.opacity = Math.random() > 0.75 ? 0.2 : 1;
-},250);
+    signal.style.opacity=Math.random()>0.7?0.3:1;
+},300);
 
-// Intento de escape
 setInterval(()=>{
-    let x = Math.random()*8 -4;
-    let y = Math.random()*8 -4;
-    signal.style.transform = `translate(${x}px,${y}px)`;
-},700);
+    let x=Math.random()*6-3;
+    let y=Math.random()*6-3;
+    signal.style.transform=`translate(${x}px,${y}px)`;
+},800);
 
-signal.addEventListener("mousedown", startHold);
-signal.addEventListener("touchstart", startHold);
-signal.addEventListener("mouseup", cancelHold);
-signal.addEventListener("mouseleave", cancelHold);
-signal.addEventListener("touchend", cancelHold);
+signal.addEventListener("mousedown",startHold);
+signal.addEventListener("touchstart",startHold);
+signal.addEventListener("mouseup",cancelHold);
+signal.addEventListener("mouseleave",cancelHold);
+signal.addEventListener("touchend",cancelHold);
 
 function startHold(){
-    holdTimer = setTimeout(startSequence,1500);
+    holdTimer=setTimeout(startSequence,1500);
 }
 
 function cancelHold(){
     clearTimeout(holdTimer);
 }
 
-// -------- SECUENCIA INICIAL --------
+// -------- SECUENCIA --------
 
 function startSequence(){
 
@@ -422,117 +181,47 @@ function startSequence(){
     document.querySelectorAll(".code-fragment").forEach(e=>e.remove());
     signal.remove();
 
-    let overlay = document.getElementById("overlay");
+    let overlay=document.getElementById("overlay");
     overlay.style.display="flex";
 
-    let messages = [
-        "Signal Detected...",
-        "Unauthorized Access...",
-        "Entity Awakening..."
-    ];
-
-    let index = 0;
-
-    function nextMessage(){
-        if(index < messages.length){
-            overlay.innerHTML = "<div class='glitch'>"+messages[index]+"</div>";
-            index++;
-            setTimeout(nextMessage,1800);
-        } else {
-            showFailure();
-        }
-    }
-
-    nextMessage();
+    overlay.innerHTML="<div class='glitch'>SYSTEM FAILURE</div><div style='color:white;margin-top:20px;'>Touch to continue...</div>";
 }
 
-function showFailure(){
-    let overlay = document.getElementById("overlay");
-    overlay.innerHTML = "<div class='glitch'>SYSTEM FAILURE</div><div style='color:white;margin-top:20px;'>Touch to continue...</div>";
-}
-
-document.getElementById("overlay").addEventListener("click",()=>{
-    startTerminal();
-});
-
-// -------- TERMINAL --------
+overlay.addEventListener("click",startTerminal);
 
 function startTerminal(){
 
-    let overlay = document.getElementById("overlay");
-    overlay.innerHTML = `
+    let overlay=document.getElementById("overlay");
+    overlay.innerHTML=`
         <div id="terminal"></div>
         <div id="progressBar"><div id="progress"></div></div>
     `;
 
-    let terminal = document.getElementById("terminal");
+    let terminal=document.getElementById("terminal");
+    let progress=document.getElementById("progress");
 
-    let commands = [
-        "Initializing override protocol...",
-        "Bypassing security layers...",
-        "Decrypting hidden entity...",
-        "Injecting unknown payload...",
-        "System integrity compromised...",
-        "Launching dangerous unlock sequence..."
-    ];
+    terminal.innerText="Launching dangerous unlock sequence...\n";
 
-    let i = 0;
+    let width=0;
+    let stuck=false;
 
-    function typeLine(){
-        if(i < commands.length){
-            let line = commands[i];
-            let charIndex = 0;
-            let lineElement = document.createElement("div");
-            terminal.appendChild(lineElement);
-
-            let typing = setInterval(()=>{
-                lineElement.textContent += line.charAt(charIndex);
-                charIndex++;
-                if(charIndex >= line.length){
-                    clearInterval(typing);
-                    i++;
-                    setTimeout(typeLine,500);
-                }
-            },30);
-        } else {
-            startLoading();
-        }
-    }
-
-    typeLine();
-}
-
-// -------- CARGA POSEÍDA --------
-
-function startLoading(){
-
-    let progress = document.getElementById("progress");
-    let terminal = document.getElementById("terminal");
-
-    let width = 0;
-    let stuck = false;
-
-    let loading = setInterval(()=>{
+    let loading=setInterval(()=>{
 
         if(!stuck){
-            width += 2;
-            progress.style.width = width + "%";
+            width+=2;
+            progress.style.width=width+"%";
         }
 
-        if(width >= 66 && !stuck){
-            stuck = true;
-            progress.style.width = "66%";
+        if(width>=66 && !stuck){
+            stuck=true;
+            progress.style.width="66%";
 
-            let warning = document.createElement("div");
-            warning.style.color="red";
-            warning.textContent = "ERROR... ENTITY RESISTING...";
-            terminal.appendChild(warning);
-
+            terminal.innerText+="\nERROR... ENTITY RESISTING...\n";
             document.body.style.animation="shake 0.1s infinite";
 
             setTimeout(()=>{
                 document.body.style.animation="";
-                warning.textContent="FORCING OVERRIDE...";
+                terminal.innerText+="FORCING OVERRIDE...\n";
                 forceFinish();
             },3000);
         }
@@ -540,15 +229,15 @@ function startLoading(){
     },60);
 
     function forceFinish(){
-        let jump = setInterval(()=>{
-            width += 5;
-            progress.style.width = width + "%";
+        let jump=setInterval(()=>{
+            width+=5;
+            progress.style.width=width+"%";
 
-            if(width >= 100){
+            if(width>=100){
                 clearInterval(jump);
                 clearInterval(loading);
 
-                let flash = document.createElement("div");
+                let flash=document.createElement("div");
                 flash.style.position="fixed";
                 flash.style.top=0;
                 flash.style.left=0;
